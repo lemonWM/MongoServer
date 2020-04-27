@@ -1,0 +1,52 @@
+[
+    {
+        "id": 1,
+        "question": "Ile to 2*2+2?",
+        "answers": {
+            "a": "6",
+            "b": "8",
+            "c": "10"
+        },
+        "correct": "a"
+    },
+    {
+        "id": 2,
+        "question": "Ile mieszkańców ma Polska?",
+        "answers": {
+            "a": "62 mln",
+            "b": "20 mln",
+            "c": "38 mln"
+        },
+        "correct": "c"
+    },
+    {
+        "id": 3,
+        "question": "W którym wieku urodził się Jan Kochanowski?",
+        "answers": {
+            "a": "XVI",
+            "b": "XVII",
+            "c": "XVIII"
+        },
+        "correct": "a"
+    },
+    {
+        "id": 4,
+        "question": "Jaka jest maksymalna dozwolona prędkość na autostradzie w Polsce?",
+        "answers": {
+            "a": "120 km/h",
+            "b": "140 km/h",
+            "c": "110 km/h"
+        },
+        "correct": "b"
+    },
+    {
+        "id": 5,
+        "question": "Na jakim kontynencie znajduje się rzeka Ganges?",
+        "answers": {
+            "a": "w Afryce",
+            "b": "w Ameryce Południowej",
+            "c": "w Azji"
+        },
+        "correct": "c"
+    }
+]
