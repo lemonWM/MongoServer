@@ -1,12 +1,11 @@
-const express = require('express')
+const express = require('express');
 const app = express();
-const path = require('path')
-const mongo = require('mongodb')
-const MongoClient = mongo.MongoClient
-const ObjectId = require('mongodb').ObjectID
+const path = require('path');
+const mongo = require('mongodb');
+const MongoClient = mongo.MongoClient;
+const ObjectId = require('mongodb').ObjectID;
 const bodyParser = require("body-parser");
 const cors = require("cors");
-const PORT = process.env.PORT || 5000;
 const fs = require("fs");
 const low = require("lowdb");
 const FileSync = require("lowdb/adapters/FileSync");
@@ -16,7 +15,7 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const jwtVerify = require("express-jwt");
 const SECRET_KEY = fs.readFileSync("private.key");
-
+const PORT = process.env.PORT || 5000;
 
 dbUrl = 'mongodb://mo1030_traveo:Bieszczady1@mongo26.mydevil.net:27017/mo1030_traveo'
 urlencodedParser = bodyParser.urlencoded({ extended: false });
