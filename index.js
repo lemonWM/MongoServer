@@ -18,7 +18,7 @@ const jwtVerify = require("express-jwt");
 const SECRET_KEY = fs.readFileSync("private.key");
 
 
-dbUrl = 'mongodb://mo1030_traveo:Lemon2@mongo26.mydevil.net:27017/mo1030_traveo'
+dbUrl = 'mongodb://mo1030_traveo:Bieszczady1@mongo26.mydevil.net:27017/mo1030_traveo'
 urlencodedParser = bodyParser.urlencoded({ extended: false });
 
 app.use( cors() );
