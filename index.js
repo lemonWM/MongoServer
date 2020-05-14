@@ -49,6 +49,42 @@ app.get('/places', function(req, res){
             db.close()
         })
     })
+});
+
+app.get('/place/:id', function(req, res){ 
+    
+    const id = req.params.id
+    const isValid = ObjectId.isValid(id)
+
+    if(! isValid ) {
+        res.status(500);
+        res.json({error: true});
+
+        return;
+    }
+
+    MongoClient.connect(dbUrl, function(err, db){
+
+        if(err){
+            res.status(500);
+            res.json({error: true});
+
+            return;
+        }
+        
+        db.collection("places").find({_id: new mongo.ObjectID(id)}).toArray(function(err, doc){
+
+            if(err) {
+                res.status(500);
+                res.json({error: true});
+
+                return;
+            }
+
+            res.json(doc[0])
+            db.close()
+        })
+    })
 })
 
 
