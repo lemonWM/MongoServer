@@ -26,7 +26,7 @@ app.use( express.static("public") );
 
 
 /* Routes */
-app.get('/places', function(req, res){
+app.get('/places', function(req, res, next){
     
     MongoClient.connect(dbUrl, function(err, db) { 
 
@@ -51,7 +51,7 @@ app.get('/places', function(req, res){
     })
 });
 
-app.get('/place/:id', function(req, res){ 
+app.get('/place/:id', function(req, res, next){ 
     
     const id = req.params.id
     const isValid = ObjectId.isValid(id)
