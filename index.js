@@ -174,9 +174,11 @@ app.post("/login", function(req, res) {
 				 }
 			  
 			  let userPassword = ''
+			  let userName =''
 			  
 			   docs.forEach(function(doc){
-               userPassword =  doc.password
+               userPassword =  doc.password;
+					userName = doc.username
             })
 			    
 			  	const passwordMatch = bcrypt.compare(password || "", userPassword, function(err, result) {
@@ -197,7 +199,7 @@ app.post("/login", function(req, res) {
                     if(result === true) {
 
                             const token = jwt.sign({
-                                username: user.username
+                                username: userName
                             }, SECRET_KEY, {
                                 expiresIn: "1h"
                             })
