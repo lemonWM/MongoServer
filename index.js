@@ -152,15 +152,7 @@ app.get('/articles/:id', function(req, res){
 
 app.post("/login", function(req, res) {
 	
-    const isValid = ObjectId.isValid(id)
-
-    if(! isValid ) {
-        res.status(500);
-        res.json({error: true});
-
-        return;
-    }	
-	
+  
     MongoClient.connect(dbUrl, function(err, db){
 
         if(err){
@@ -170,7 +162,8 @@ app.post("/login", function(req, res) {
             return;
         }
        
-		const user = req.body.username
+			const user = req.body.username
+			const password = req.body.password
 		 
         db.collection('users').find({username: user}).toArray(function(err, docs) {  
 
@@ -179,19 +172,25 @@ app.post("/login", function(req, res) {
 							error: "Unauthorized"
 					  })
 				 }
+			  
+			  let userPassword = ''
+			  
+			   docs.forEach(function(doc){
+               userPassword =  doc.password
+            })
 			    
-			  	const passwordMatch = bcrypt.compare(req.body.password || "", user.password, function(err, result) {
+			  	const passwordMatch = bcrypt.compare(password || "", userPassword, function(err, result) {
 
                     if(err) {
                             console.log(err);
                             return res.status(500).json({
-                                error: req.body.password 
+                                error: "login error"
                             })
                     }
 
                     if(result === false) {
                             return res.status(401).json({
-                                error: "Unauthorized"
+                                error: "Password is not correct"
                             })
                     }
 
@@ -204,7 +203,6 @@ app.post("/login", function(req, res) {
                             })
 
                             return res.json({ token });
-
                     }
                     db.close()
                 })
