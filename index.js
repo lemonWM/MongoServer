@@ -170,9 +170,9 @@ app.post("/login", function(req, res) {
             return;
         }
        
-		 const user = req.body.username
+		const user = req.body.username
 		 
-        db.collection('users').find({username: user}).toArray(function(err, docs){
+        db.collection('users').find({username: user}).toArray(function(err, docs) {  
 
 				 if(!user) {
 					  return res.status(401).json({
@@ -182,33 +182,35 @@ app.post("/login", function(req, res) {
 			    
 			  	const passwordMatch = bcrypt.compare(req.body.password || "", user.password, function(err, result) {
 
-				  if(err) {
-						console.log(err);
-						return res.status(500).json({
-							 error: "Internal Server Error"
-						})
-				  }
+                    if(err) {
+                            console.log(err);
+                            return res.status(500).json({
+                                error: "Internal Server Error"
+                            })
+                    }
 
-				  if(result === false) {
-						return res.status(401).json({
-							 error: "Unauthorized"
-						})
-				  }
+                    if(result === false) {
+                            return res.status(401).json({
+                                error: "Unauthorized"
+                            })
+                    }
 
-				  if(result === true) {
+                    if(result === true) {
 
-						const token = jwt.sign({
-							 username: user.username
-						}, SECRET_KEY, {
-							 expiresIn: "1h"
-						})
+                            const token = jwt.sign({
+                                username: user.username
+                            }, SECRET_KEY, {
+                                expiresIn: "1h"
+                            })
 
-						return res.json({ token });
+                            return res.json({ token });
 
-				  }
-			db.close()
-
+                    }
+                    db.close()
+                })
+        })
     })
-});
+})
+
 
 app.listen(PORT, () => console.log(`Listening on ${ PORT }`))
