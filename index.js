@@ -185,7 +185,7 @@ app.post("/login", function(req, res) {
                     if(err) {
                             console.log(err);
                             return res.status(500).json({
-                                error: "Internal Server Error"
+                                error: req.body.password 
                             })
                     }
 
