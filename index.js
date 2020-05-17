@@ -85,7 +85,7 @@ app.get('/place/:id', function(req, res){
             db.close()
         })
     })
-})
+});
 
 
 app.get('/articles', function(req, res){
@@ -111,9 +111,44 @@ app.get('/articles', function(req, res){
             db.close()
         })
     })
+});
+
+
+app.get('/articles/:id', function(req, res){ 
+    
+    const id = req.params.id
+    const isValid = ObjectId.isValid(id)
+
+    if(! isValid ) {
+        res.status(500);
+        res.json({error: true});
+
+        return;
+    }
+
+    MongoClient.connect(dbUrl, function(err, db){
+
+        if(err){
+            res.status(500);
+            res.json({error: true});
+
+            return;
+        }
+        
+        db.collection("articles").find({_id: new mongo.ObjectID(id)}).toArray(function(err, doc){
+
+            if(err) {
+                res.status(500);
+                res.json({error: true});
+
+                return;
+            }
+
+            res.json(doc[0])
+            db.close()
+        })
+    })
 })
-
-
 
 
 app.listen(PORT, () => console.log(`Listening on ${ PORT }`))
