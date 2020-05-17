@@ -148,7 +148,7 @@ app.get('/articles/:id', function(req, res){
             db.close()
         })
     })
-})
+});
 
 app.post("/login", function(req, res) {
 	
