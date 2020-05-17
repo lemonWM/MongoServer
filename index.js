@@ -150,5 +150,65 @@ app.get('/articles/:id', function(req, res){
     })
 })
 
+app.post("/login", function(req, res) {
+	
+    const isValid = ObjectId.isValid(id)
+
+    if(! isValid ) {
+        res.status(500);
+        res.json({error: true});
+
+        return;
+    }	
+	
+    MongoClient.connect(dbUrl, function(err, db){
+
+        if(err){
+            res.status(500);
+            res.json({error: true});
+
+            return;
+        }
+       
+		 const user = req.body.username
+		 
+        db.collection('users').find({username: user}).toArray(function(err, docs){
+
+				 if(!user) {
+					  return res.status(401).json({
+							error: "Unauthorized"
+					  })
+				 }
+			    
+			  	const passwordMatch = bcrypt.compare(req.body.password || "", user.password, function(err, result) {
+
+				  if(err) {
+						console.log(err);
+						return res.status(500).json({
+							 error: "Internal Server Error"
+						})
+				  }
+
+				  if(result === false) {
+						return res.status(401).json({
+							 error: "Unauthorized"
+						})
+				  }
+
+				  if(result === true) {
+
+						const token = jwt.sign({
+							 username: user.username
+						}, SECRET_KEY, {
+							 expiresIn: "1h"
+						})
+
+						return res.json({ token });
+
+				  }
+			db.close()
+
+    })
+});
 
 app.listen(PORT, () => console.log(`Listening on ${ PORT }`))
