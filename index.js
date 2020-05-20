@@ -182,6 +182,8 @@ app.post("/login", function(req, res) {
 					userName = doc.username
             })
 			    
+			   const findedUser = docs[0]
+				
 			  	const passwordMatch = bcrypt.compare(password || "", userPassword, function(err, result) {
 
                     if(err) {
@@ -205,7 +207,7 @@ app.post("/login", function(req, res) {
                                 expiresIn: "1h"
                             })
 
-                            return res.json({ token });
+                            return res.json({ token , findedUser});
                     }
                     db.close()
                 })
