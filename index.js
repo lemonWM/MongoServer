@@ -150,9 +150,10 @@ app.get('/articles/:id', function(req, res){
     })
 });
 
+
+// for user login - recive token
 app.post("/login", function(req, res) {
 	
-  
     MongoClient.connect(dbUrl, function(err, db){
 
         if(err){
@@ -211,6 +212,79 @@ app.post("/login", function(req, res) {
         })
     })
 })
+
+
+// for validation username ->
+app.post("/userValid", function(req, res) {
+	
+    MongoClient.connect(dbUrl, function(err, db){
+		 
+		 const user = req.body.username;
+
+        if(err){
+            res.status(500);
+            res.json({error: true});
+
+            return;
+        }
+        
+        db.collection("users").find({username: user}).toArray(function(err, doc){
+
+           if(err) {
+                res.status(500);
+                res.json({unique: false});
+
+                return;
+           }
+			  if(doc[0]){
+				  res.json({
+						unique: false
+					})
+			  } else {
+				  res.json({
+						unique: true
+					})				  
+			  }
+            db.close()
+        })
+    })
+});
+
+
+// for register new user
+app.post("/user/register", function(req, res) {
+	
+	    MongoClient.connect(dbUrl, function(err, db) {
+
+			  if(err) {
+					res.status(500);
+					res.json({error: true});
+
+					return;
+			  }
+
+			  bcrypt.hash(req.body.password, 10, function(err, hash) {
+
+				  const user = {
+					  username: req.body.username,
+					  password: hash
+				  }
+
+				  db.collection("users").insert(user, function(err, doc) {
+
+						if(err) {
+							 res.status(500);
+							 res.json({error: true});
+
+							 return;
+						}
+						res.json(doc[0])
+
+						db.close();
+				  });		
+				})	
+		 });
+});
 
 
 app.listen(PORT, () => console.log(`Listening on ${ PORT }`))
