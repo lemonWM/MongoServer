@@ -16,6 +16,8 @@ const jwt = require("jsonwebtoken");
 const jwtVerify = require("express-jwt");
 const SECRET_KEY = fs.readFileSync("private.key");
 const PORT = process.env.PORT || 5000;
+const multer = require('multer');
+const upload = multer({ dest: 'public/data/images'});
 
 dbUrl = 'mongodb://mo1030_traveo:Bieszczady1@mongo26.mydevil.net:27017/mo1030_traveo'
 urlencodedParser = bodyParser.urlencoded({ extended: false });
@@ -287,6 +289,26 @@ app.post("/user/register", function(req, res) {
 				})	
 		 });
 });
+
+
+// upload image from create article
+app.post("/image/upload", upload.single('file'), function (req, res, next) {
+
+	console.log(req.file)
+	
+	res.send({
+		dest: req.file.destination,
+		name: req.file.filename,
+		path: req.file.path
+	})
+})
+
+app.get("/load/:img", function(req, res, next) {
+	
+	
+})
+
+
 
 
 app.listen(PORT, () => console.log(`Listening on ${ PORT }`))
