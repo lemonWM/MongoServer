@@ -303,9 +303,13 @@ app.post("/image/upload", upload.single('file'), function (req, res, next) {
 	})
 })
 
+// load img 
 app.get("/load/:img", function(req, res, next) {
 	
-	
+	const imgName = req.params.img
+
+	res.contentType('image/jpeg');
+	res.sendFile(__dirname + '/public/data/images/'+ imgName);
 })
 
 
