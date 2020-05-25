@@ -153,6 +153,36 @@ app.get('/articles/:id', function(req, res){
 });
 
 
+// article create new
+app.post("/article/create-new", function(req, res) {
+	
+	console.log(req.body)
+
+    MongoClient.connect(dbUrl, function(err, db) {
+
+        if(err) {
+            res.status(500);
+            res.json({error: true});
+
+            return;
+        }
+
+        db.collection("articles").insert(req.body, function(err, doc) {
+
+            if(err) {
+                res.status(500);
+                res.json({error: true});
+
+                return;
+            }
+            res.json(doc[0])
+
+            db.close();
+        });
+    });
+});
+
+
 // for user login - recive token
 app.post("/login", function(req, res) {
 	
