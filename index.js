@@ -89,6 +89,43 @@ app.get('/place/:id', function(req, res, next){
     })
 });
 
+// place rate 
+
+app.put('/place/:id', function(req, res){
+
+    const rate = req.body.rateValue
+	 const id = req.params.id
+
+	 console.log(rate+ ' ' + id)
+	 	
+    MongoClient.connect(dbUrl, function(err, db){
+
+        if(err){
+            res.status(500);
+            res.json({error: true});
+    
+            return; 
+        }
+
+        db.collection('places').findAndModify({_id: new mongo.ObjectID(id)}, {}, {$push: {
+			  
+            rating: req.body.rateValue
+        
+        }}, {returnNewDocument: true}, function(err, doc){
+
+            if(err){
+                res.status(500);
+                res.json({error: true});
+        
+                return; 
+            }
+            res.send(doc)
+            
+            db.close()
+        })
+    })
+})
+
 
 app.get('/articles', function(req, res){
     
@@ -214,8 +251,11 @@ app.post("/login", function(req, res) {
 					userName = doc.username
             })
 			    
-			   const findedUser = docs[0]
-				
+			   const findedUser = {
+					'user': docs[0].username,
+					'_id': docs[0]._id
+				}
+
 			  	const passwordMatch = bcrypt.compare(password || "", userPassword, function(err, result) {
 
                     if(err) {
@@ -321,10 +361,42 @@ app.post("/user/register", function(req, res) {
 });
 
 
+// get single user
+app.get('/user/:id', function(req, res){ 
+    
+    const id = req.params.id
+
+    MongoClient.connect(dbUrl, function(err, db){
+
+        if(err){
+            res.status(500);
+            res.json({error: true});
+
+            return;
+        }
+        
+        db.collection("users").find({_id: new mongo.ObjectID(id)}).toArray(function(err, doc){
+
+            if(err) {
+                res.status(500);
+                res.json({error: true});
+
+                return;
+            }
+			  	delete doc[0].password
+
+            res.json(doc[0])
+            db.close()
+        })
+    })
+});
+
+
+
 // upload image from create article
 app.post("/image/upload", upload.single('file'), function (req, res, next) {
 
-	console.log(req.file)
+	//console.log(req.file)
 	
 	res.send({
 		dest: req.file.destination,
@@ -340,6 +412,138 @@ app.get("/load/:img", function(req, res, next) {
 
 	res.contentType('image/jpeg');
 	res.sendFile(__dirname + '/public/data/images/'+ imgName);
+})
+
+
+// get reservations
+app.get('/reservations', function(req, res, next){
+    
+    MongoClient.connect(dbUrl, function(err, db) { 
+
+        if(err) {
+            res.status(500);
+            res.send({error: true});
+
+            return;
+        }
+    
+        db.collection("reservations").find({}).toArray(function(err, docs) {
+              
+            if(err) {     
+                res.status(500);
+                res.json({error: true});
+
+                return;
+            }
+            res.json(docs)
+            db.close()
+        })
+    })
+});
+
+
+// new reservations
+app.post("/reservation/create", function(req, res) {
+
+    MongoClient.connect(dbUrl, function(err, db) {
+
+        if(err) {
+            res.status(500);
+            res.json({error: true});
+
+            return;
+        }
+
+        db.collection("reservations").insert(req.body, function(err, doc) {
+
+            if(err) {
+                res.status(500);
+                res.json({error: true});
+
+                return;
+            }
+            res.json(doc.insertedIds[0]) // return id of created 
+
+            db.close();
+        });
+    });
+});
+
+
+//get single reservation
+app.get('/reservation/:id', function(req, res, next){ 
+    
+    const id = req.params.id
+//    const isValid = ObjectId.isValid(id)
+//
+//    if(! isValid ) {
+//        res.status(500);
+//        res.json({error: true});
+//
+//        return;
+//    }
+
+    MongoClient.connect(dbUrl, function(err, db){
+
+        if(err){
+            res.status(500);
+            res.json({error: true});
+
+            return;
+        }
+        
+        db.collection("reservations").find({_id: new mongo.ObjectID(id)}).toArray(function(err, doc){
+
+            if(err) {
+                res.status(500);
+                res.json({error: true});
+
+                return;
+            }
+
+            res.json(doc[0])
+            db.close()
+        })
+    })
+});
+
+
+// set in user profile reservation after create reservation
+
+app.put('/user/reservation/create', function(req, res){
+
+    const user = req.body.username
+
+    MongoClient.connect(dbUrl, function(err, db){
+
+        if(err){
+            res.status(500);
+            res.json({error: true});
+    
+            return; 
+        }
+
+        db.collection('users').findAndModify({username: user}, {}, {$push: {
+
+            reservations:{
+					reservationID:req.body.reservationID,
+					place_name:req.body.place_name,
+					destination:req.body.destination
+            }
+        
+        }}, {returnNewDocument: true}, function(err, doc){
+
+            if(err){
+                res.status(500);
+                res.json({error: true});
+        
+                return; 
+            }
+            res.send(doc)
+            
+            db.close()
+        })
+    })
 })
 
 
