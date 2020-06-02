@@ -18,6 +18,14 @@ const SECRET_KEY = fs.readFileSync("private.key");
 const PORT = process.env.PORT || 5000;
 const multer = require('multer');
 const upload = multer({ dest: 'public/data/images'});
+const cloudinary = require("cloudinary").v2;
+
+cloudinary.config({
+cloud_name: "donmoqxem",
+api_key: "552732175724517",
+api_secret: "iAXtFFe_HJ0gQQjxPLRM2Xkg_Nk"
+});
+
 
 dbUrl = 'mongodb://mo1030_traveo:Bieszczady1@mongo26.mydevil.net:27017/mo1030_traveo'
 urlencodedParser = bodyParser.urlencoded({ extended: false });
@@ -393,17 +401,25 @@ app.get('/user/:id', function(req, res){
 
 
 
-// upload image from create article
-app.post("/image/upload", upload.single('file'), function (req, res, next) {
+//upload img on cloudinary
 
-	//console.log(req.file)
+app.post("/upload_img", upload.single('file'), function (req, res, next) {
 	
-	res.send({
-		dest: req.file.destination,
-		name: req.file.filename,
-		path: req.file.path
-	})
+	let image = req.file.path
+	
+	cloudinary.uploader.upload(image, function(error, result) {
+
+  		if(error) {     
+			  res.status(500);
+			  res.json({error: true});
+
+			  return;
+       } res.send({
+			 url: result.url
+		 })
+	});
 })
+
 
 // load img 
 app.get("/load/:img", function(req, res, next) {
