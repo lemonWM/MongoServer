@@ -228,6 +228,47 @@ app.post("/article/create-new", function(req, res) {
 });
 
 
+// article put comment
+
+app.put('/create-comment', function(req, res){
+
+    const id = req.body.articleID
+	 
+	 console.log(id)
+
+    MongoClient.connect(dbUrl, function(err, db){
+
+        if(err){
+            res.status(500);
+            res.json({error: true});
+    
+            return; 
+        }
+
+        db.collection('articles').findAndModify({_id: new mongo.ObjectID(id)}, {}, {$push: {
+
+            comments:{
+					author:req.body.author,
+					text:req.body.text,
+					data:req.body.data
+            }
+        
+        }}, {returnNewDocument: true}, function(err, doc){
+
+            if(err){
+                res.status(500);
+                res.json({error: true});
+        
+                return; 
+            }
+            res.send(doc)
+            
+            db.close()
+        })
+    })
+})
+
+
 // for user login - recive token
 app.post("/login", function(req, res) {
 	
@@ -349,7 +390,8 @@ app.post("/user/register", function(req, res) {
 
 				  const user = {
 					  username: req.body.username,
-					  password: hash
+					  password: hash,
+					  registered: req.body.registered
 				  }
 
 				  db.collection("users").insert(user, function(err, doc) {
@@ -561,7 +603,6 @@ app.put('/user/reservation/create', function(req, res){
         })
     })
 })
-
 
 
 
