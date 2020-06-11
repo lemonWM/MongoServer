@@ -21,13 +21,13 @@ const upload = multer({ dest: 'public/data/images'});
 const cloudinary = require("cloudinary").v2;
 
 cloudinary.config({
-cloud_name: "donmoqxem",
-api_key: "552732175724517",
-api_secret: "iAXtFFe_HJ0gQQjxPLRM2Xkg_Nk"
+cloud_name: "xxxxx",
+api_key: "xxxxxx",
+api_secret: "xxxxxxxxxxxxxxxxxxx"
 });
 
 
-dbUrl = 'mongodb://mo1030_traveo:Bieszczady1@mongo26.mydevil.net:27017/mo1030_traveo'
+dbUrl = 'mongodb://Xxxxxxxxxxxxxxxxxxxxxxxxx'
 urlencodedParser = bodyParser.urlencoded({ extended: false });
 
 app.use( cors() );
